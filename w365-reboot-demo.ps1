@@ -16,7 +16,7 @@ Import-Module Microsoft.Graph.DeviceManagement.Administration
 Select-MgProfile -Name "Beta"
 
 #Get all Cloud PC's
-$AllCloudPC = Get-MgDeviceManagementVirtualEndpointCloudPC | Where-Object {($_.DisplayName -Like '*Joey*')}
+$AllCloudPC = Get-MgDeviceManagementVirtualEndpointCloudPC | Where-Object {($_.DisplayName -Like '*')}
 
 #Restart all Cloud PC's
 foreach ($CloudPC in $AllCloudPC.Id)
