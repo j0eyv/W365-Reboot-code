@@ -75,10 +75,13 @@ $SecString = ConvertTo-SecureString "***************************" -AsPlainText -
 New-AzAutomationSourceControl -Name SCGitHub -RepoUrl $SCRepo -SourceType GitHub -FolderPath "/Runbook" -Branch main -ResourceGroupName $RGName -AutomationAccountName $AutomationAccount -AccessToken $SecString -EnableAutoSync
 
 #Import Recurring Schedule
-#Note: This schedule is created on the Automation Account niveau. All runbooks within the Automation Account make use of this.
 $StartTime = Get-Date "$RebootTime"
 $EndTime = $StartTime.AddYears(5)
 New-AzAutomationSchedule -AutomationAccountName "$AutomationAccount" -Name "DailyReboot" -StartTime $StartTime -ExpiryTime $EndTime -DayInterval 1 -ResourceGroupName "$RGName" -TimeZone "$ScheduleTimeZone"
+
+#Link Runbook to Recurring Schedule
+$GetRunbook = Get-AzAutomationRunbook -AutomationAccountName "$AutomationAccount" -ResourceGroupName "$RGName"
+Register-AzAutomationScheduledRunbook -AutomationAccountName "$AutomationAccount" -RunbookName $GetRunbook.Name -ScheduleName "DailyReboot" -ResourceGroupName "$RGName"
 
 #Add "Graph PowerShell" Enterprise APP.
 New-AzureADApplication -DisplayName "Microsoft Graph PowerShell"
